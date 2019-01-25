@@ -4,6 +4,6 @@
 from ._astropy_init import *
 
 if not _ASTROPY_SETUP_:
-    from .utils import *
+    from . import misc
 
 
