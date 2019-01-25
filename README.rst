@@ -5,7 +5,8 @@ Utilities for spectropolarimetry analysis and data reduction
     :target: http://www.astropy.org
     :alt: Powered by Astropy Badge
 
-
+The idea is to make a more general and a more modular package for spectropolarimetry (than my personnal package FUSS). 
+The ultimate goal is for these utilities to fully integrate astropy. I don't know if I'll get there, but that's the dream. 
 
 
 License
