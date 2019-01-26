@@ -4,6 +4,8 @@ Utilities for spectropolarimetry analysis and data reduction
 .. image:: http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat
     :target: http://www.astropy.org
     :alt: Powered by Astropy Badge
+.. image:: https://travis-ci.com/HeloiseS/pyspecpol.svg?branch=master
+    :target: https://travis-ci.com/HeloiseS/pyspecpol
 
 **THIS IS A DEVELOPMENT ENVIRONMENT, USE AT YOUR OWN PERIL**
 
