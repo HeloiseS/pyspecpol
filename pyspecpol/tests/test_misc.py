@@ -1,6 +1,8 @@
 import pyspecpol.misc as polmisc
 import numpy as np
 
+# TODO: Setup Travis?
+
 def test_pol_deg():
        # Checks single Values
        assert polmisc._pol_deg(2, 0) == 2, "Can't combine single values."
