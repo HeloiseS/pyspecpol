@@ -151,3 +151,4 @@ after_success:
     # If coveralls.io is set up for this package, uncomment the line below.
     # The coveragerc file may be customized as needed for your package.
     # - if [[ $SETUP_CMD == *coverage* ]]; then coveralls --rcfile='pyspecpol/tests/coveragerc'; fi
+    - codecov -t 3bb56277-0011-4617-b876-92e69decdaf8
