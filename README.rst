@@ -6,6 +6,8 @@ Utilities for spectropolarimetry analysis and data reduction
     :target: https://travis-ci.com/HeloiseS/pyspecpol
 .. image:: https://zenodo.org/badge/167566861.svg
    :target: https://zenodo.org/badge/latestdoi/167566861
+.. image:: https://codecov.io/gh/HeloiseS/pyspecpol/branch/master/graph/badge.svg
+  :target: https://codecov.io/gh/HeloiseS/pyspecpol
 .. image:: http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=fl$
     :target: http://www.astropy.org
     :alt: Powered by Astropy Badge
