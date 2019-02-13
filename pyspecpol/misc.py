@@ -18,6 +18,10 @@ if sys.version_info.major < 3:
 ### PolData Object ###
 
 class PolData(object):
+    # TODO: Give it a __add__, __sub__, __truediv__, etc...
+    # TODO: plotting methods??
+    # TODO: ISP related methods??
+
     def __init__(self, filename=None):
         if filename is not None:
             self.load_file(filename)
@@ -29,10 +33,14 @@ class PolData(object):
                                                                                    False, False, \
                                                                                    False, False
 
-
     def load_file(self, filename,
                  force=False, **kwargs):
-        """
+
+    # TODO: check the file exists and create test for the case in which it doesn't
+    # TODO: Check I can read a dataframe type file that has indexes
+    # TODO: Check whether I can read file that has no column headers
+
+     """
         Loads data from a data file. Default separator is comma.
 
         Notes
@@ -67,13 +75,6 @@ class PolData(object):
         -------
 
         """
-        # check the file exists
-        # if there is data already, check if force=True
-        # if not give an error and tell user to use Force = True
-        # I want to be able to read a dataframe type thing that has indexes
-        # I want to be able to read file that has no column headers
-        # I want to parse it to PolData object (which I'll need to create)
-
         print("Accepted column names: \n "
               "wl = Wavelength / time = time / p = Degree or polarisation / dp = Error on p / "
               "q =  Stokes q / dq =  Error on Stokes q / u =  Stokes u / du = Error on Stokes u /"
