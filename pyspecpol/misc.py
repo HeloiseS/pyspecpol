@@ -33,14 +33,13 @@ class PolData(object):
                                                                                    False, False, \
                                                                                    False, False
 
-    def load_file(self, filename,
-                 force=False, **kwargs):
+    def load_file(self, filename, force=False, **kwargs):
 
     # TODO: check the file exists and create test for the case in which it doesn't
     # TODO: Check I can read a dataframe type file that has indexes
     # TODO: Check whether I can read file that has no column headers
 
-     """
+        """
         Loads data from a data file. Default separator is comma.
 
         Notes
@@ -75,12 +74,12 @@ class PolData(object):
         -------
 
         """
+
         print("Accepted column names: \n "
               "wl = Wavelength / time = time / p = Degree or polarisation / dp = Error on p / "
               "q =  Stokes q / dq =  Error on Stokes q / u =  Stokes u / du = Error on Stokes u /"
               "pa = Polarisation Angle / dpa = Error on P.A.\n"
               "The column names are case sensitive.")
-
 
 
         # Here I am checking whether some attributes have already been filled.
