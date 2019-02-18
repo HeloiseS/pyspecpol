@@ -1,5 +1,10 @@
 import pyspecpol.misc as polmisc
 import numpy as np
+import pkg_resources
+
+data_path = pkg_resources.resource_filename('pyspecpol', 'data')
+
+# TODO: poldata.csv not found by TRAVIS.CI -- FIX IT
 
 
 class TestPolData(object):
@@ -10,7 +15,7 @@ class TestPolData(object):
 
     def test_init_from_file(self):
         # Checking that I can load the data file correctly
-        poldata = polmisc.PolData('poldata.csv')
+        poldata = polmisc.PolData(data_path+'/poldata.csv')
 
         assert isinstance(poldata, polmisc.PolData)
 
@@ -26,11 +31,11 @@ class TestPolData(object):
         poldata.wl, poldata.p = np.array([3000,3500]), np.array([3,3.5])
 
         # Then I try to load the file without `force = True` and check values are unchanged
-        poldata.load_file('poldata.csv')
+        poldata.load_file(data_path+'/poldata.csv')
         assert poldata.wl[0] == 3000 and poldata.p[0] == 3, "Values shouldn't have changed!"
 
         # Then I add in `force=True` and check everything has updated.
-        poldata.load_file('poldata.csv', force=True)
+        poldata.load_file(data_path+'/poldata.csv', force=True)
         assert poldata.wl[0] == 4000 and poldata.p[0] == 1.0, "Values should be the same as in file"
 
 
