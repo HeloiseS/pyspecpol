@@ -134,3 +134,13 @@ class TestDegreeOfPolarisation(object):
                 "Combining arrays and NOT debiasing, p is wrong."
         assert np.sum(np.isclose(dp, np.array([ 0.57008771,  0.86023253,  0.41231056]))) == 3, \
                 "Combining arrays and NOT debiasing, dp is wrong"
+
+
+class TestPolarisationAngle(object):
+    def test_pol_ang(self):
+
+        assert polmisc._pol_ang(1,1) == 22.5, "P.A. calculation from scalars failing"
+        pa = polmisc._pol_ang(q = np.array([0, 0, -1,  0]),
+                                   u = np.array([2, 0, 0, -1]))
+        assert np.sum(np.isclose(pa, np.array([45, 0, 90, 135]))) == 4, \
+            "P.A. calculation from arrays failing"

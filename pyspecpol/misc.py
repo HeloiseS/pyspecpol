@@ -287,6 +287,45 @@ def _pol_deg_and_err(q, u, dq, du):
     dp = (1 / p) * np.sqrt((q * dq) ** 2 + (u * du) ** 2)
     return p, dp
 
+####### Calculating the Polarisation Angle (P.A.)  #####
+def calc_pa(q, u, dq=None, du=None):
+    # Checks whether these parameters are lists and warns that calculations may fail
+    _warn_if_list([q, u, dq, du])
+
+    if dq is None and du is None:
+        # if no errors are given just calculate a raw degree of polarisation
+        return _pol_deg(q,u)
+
+    elif (dq is not None and du is None) or (du is not None and dq is None):
+        # if errors are missing give warning and return raw degree of pol
+        warnings.warn('It seems one set of error is missing (either for q or u)\nOnly p will be '
+                      + 'returned without being debiased. If this is unexpected check your input.')
+        return _pol_deg(q,u)
+
+    elif dq is not None and du is not None:
+        # The intention is good but this will fail if a float and an int are parsed an that's
+        # not the point
+        # assert type(q) == type(dq) == type(u) == type(du), "Types of parsed data should be the same."
+
+        p, dp = _pol_deg_and_err(q,u, dq, du)
+
+
+def _pol_ang(q, u):
+    pa = 0.5*(np.arctan2(u, q))
+
+    # I want a range from 0 to 2 pi
+    try:
+        pa = np.array([angle if angle >= 0 else angle + np.pi for angle in pa])
+    except TypeError:
+        if pa < 0: pa += np.pi
+
+    return pa*180/np.pi # returns the polarisation angle in degrees
+
+def _pol_ang_and_error(q, u, dq, du):
+    pa = _pol_ang(q,u)
+    dpa = ( ( 0.5*np.sqrt( ((u*dq)**2 + (q*du)**2) / (q**2+u**2)**2) )) *180 / np.pi
+
+    return pa, dpa
 
 
 
