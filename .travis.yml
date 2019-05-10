@@ -145,6 +145,7 @@ install:
     # other dependencies.
 
 script:
+   - pip install --upgrade pip
    - $MAIN_CMD $SETUP_CMD
 
 after_success:
