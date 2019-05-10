@@ -321,9 +321,38 @@ def _pol_ang(q, u):
 
     return pa*180/np.pi # returns the polarisation angle in degrees
 
-def _pol_ang_and_error(q, u, dq, du):
+
+def _pol_ang_and_err(q, u, dq, du):
+    _warn_if_list([q, u, dq, du])
+
+    # #### Calculating the POL. ANGLE.
     pa = _pol_ang(q,u)
-    dpa = ( ( 0.5*np.sqrt( ((u*dq)**2 + (q*du)**2) / (q**2+u**2)**2) )) *180 / np.pi
+
+    # #### Calculating the ERRORS on the Pol. Angle
+
+    # The line below to ignore the runtime warnings that occur when I get Nan values in the errors.
+    # This occurs if q and u are both 0 , later we change the nan error values to be 90 degrees
+    # so the full plus minus uncertainty covers the full 180 degree range that P.A. can have
+    # since P.A. is technically not defined for q = u = 0
+    np.seterr(divide='ignore', invalid='ignore')
+
+    # This try/except catches the division by zero occurring when scalar inouts q = u = 0 are given
+    try:
+        # error formula from propagation of uncertainty neglecting the qu covariance and
+        # converting to degrees
+        dpa =  ( 0.5*np.sqrt( ((u*dq)**2 + (q*du)**2) / (q**2+u**2)**2) ) * 180 / np.pi
+    except ZeroDivisionError as e:
+        print("ZeroDivision Exception Triggered:", e,
+              "-- Returning an error of +/- 90 degrees on P.A.")
+        dpa = 90
+        return pa, dpa
+
+    # This try/except goes through an array and replaces nan values by 90
+    try:
+        dpa = np.array([err if not np.isnan(err) else 90 for err in dpa])
+    except TypeError:
+        # This exception is triggered if can't iterate over dpa, e.g. when input was scalar.
+        if q == 0 and u == 0 : dpa = 90
 
     return pa, dpa
 

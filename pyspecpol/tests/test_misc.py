@@ -4,9 +4,6 @@ import pkg_resources
 
 data_path = pkg_resources.resource_filename('pyspecpol', 'data')
 
-# TODO: poldata.csv not found by TRAVIS.CI -- FIX IT
-
-
 class TestPolData(object):
     def test_blank_init(self):
         # checking basic instanciation of a PolData object
@@ -44,22 +41,22 @@ class TestPolData(object):
 
 class TestDegreeOfPolarisation(object):
     def test_pol_deg(self):
-           # Checks single Values
+           # Inputs: Scalar
            assert polmisc._pol_deg(2, 0) == 2, "Can't combine single values."
 
-           # Checks values given in array
+           # Inputs: 1D numpy.ndarray
            p_arr = polmisc._pol_deg(np.array([2,2,2]), np.array([1,1,1]))
            # if all 3 values of the arrays are right, I'll get 3 True values, which I sum (giving 3)
            assert np.sum(np.isclose(p_arr, np.array([ 2.23606798,  2.23606798,  2.23606798]))) == 3, \
                   "Can't combine arrays "
 
     def test_pol_deg_error(self):
-           # Checks single values
+           # Inputs: scalar
            p, dp = polmisc._pol_deg_and_err(1,1,0.5,0.5)
            assert np.isclose(p, 1.41421356) , "Adding single values, p wrong."
            assert np.isclose(dp, 0.5) , "Adding single values, delta_p wrong."
 
-           # Checks values in array
+           # Inputs: 1D numpy.ndarray
            p, dp = polmisc._pol_deg_and_err(q = np.array([1.,2.,1.]),
                                             u = np.array([1.,2.,1.]),
                                             dq = np.array([0.5, 0.5, 0.5]),
@@ -70,15 +67,15 @@ class TestDegreeOfPolarisation(object):
                   "Combining arrays, error on degree of polarisation is wrong."
 
     def test_debias_polarisation(self):
-           # Checks single values
+           # Inputs: scalar
            debiased_p = polmisc.debias_polarisation(2,1)
            assert debiased_p == 1.5, "Debiasing single value. Wrong."
 
-           # Check list of values
+           # Inputs: list of values
            debiased_p_list = polmisc.debias_polarisation([2.,2.,2.], [1.,2.,1.])
            assert debiased_p_list == [1.5, 2., 1.5], "Debiasing list of values. Wrong."
 
-           # Checks numpy.ndarray
+           # Inputs: 1D numpy.ndarray
            debiased_p_list = polmisc.debias_polarisation(np.array([2.,2.,2.]),
                                                          np.array([1.,2.,1.]))
            assert debiased_p_list == [1.5, 2., 1.5], "Debiasing numpy.ndarray of values. Wrong."
@@ -103,7 +100,7 @@ class TestDegreeOfPolarisation(object):
         assert np.isclose(dp,0.64509987300715388), "Calculating dp from scalars with errors and " \
                                                    "NOT debiased. Wrong. "
 
-        #### Inputs: Arrays
+        #### Inputs: 1D numpy.ndarrays
 
         # Without errors
         p = polmisc.calc_p(q = np.array([1, 2, 3]),
@@ -138,9 +135,58 @@ class TestDegreeOfPolarisation(object):
 
 class TestPolarisationAngle(object):
     def test_pol_ang(self):
-
+        # Inputs: Scalar
         assert polmisc._pol_ang(1,1) == 22.5, "P.A. calculation from scalars failing"
+
+        # Inputs: 1D numpy.ndarrays (Including a 360/2 deg range of angles)
         pa = polmisc._pol_ang(q = np.array([0, 0, -1,  0]),
                                    u = np.array([2, 0, 0, -1]))
         assert np.sum(np.isclose(pa, np.array([45, 0, 90, 135]))) == 4, \
             "P.A. calculation from arrays failing"
+
+    def test_pol_ang_and_error(self):
+        # Inputs: Scalar
+
+        # No tricks
+        pa, dpa = polmisc._pol_ang_and_err(0,1, 0.1,0.1)
+        assert pa == 45, "P.A. calculation from scalar failing"
+        assert np.isclose(dpa, 2.8647889756), "P.A. error calculation from scalar failing"
+
+        # q == u == 0 which should tigger safeguards
+        pa, dpa = polmisc._pol_ang_and_err(0, 0, 0.1, 0.1)
+        assert pa == 0, "P.A. calculation from scalar fails for q = u = 0"
+        assert dpa == 90, "P.A. errors safeguard for q = u = 0 in scalar input failed"
+
+        # Inputs: 1D numpy.ndarray
+
+        # No Tricks
+        pa, dpa = polmisc._pol_ang_and_err(q = np.array([0, 2, -1,  0]),
+                                           u = np.array([2, 0, 0, -1]),
+                                           dq = np.array([0.1,0.2,0.05,0.3]),
+                                           du = np.array([0.05,0.1,0.1,0.2]))
+
+        assert np.sum(np.isclose(pa,  np.array([45, 0, 90, 135]))) == 4, \
+        "P.A. calculation from arrays failing"
+
+        assert np.sum(np.isclose(dpa, np.array([1.43239449,
+                                                1.43239449,
+                                                2.86478898,
+                                                8.59436693]))) == 4, \
+        "P.A. error calculation from arrays failing"
+
+        # q == u == 0 which should trigger safeguards
+        pa, dpa = polmisc._pol_ang_and_err(q = np.array([0, 2, 0,  0]),
+                                           u = np.array([0, 0, 0, -1]),
+                                           dq = np.array([0.1,0.2,0.05,0.3]),
+                                           du = np.array([0.05,0.1,0.1,0.2]))
+
+        assert np.sum(np.isclose(pa,  np.array([0, 0, 0, 135]))) == 4, \
+        "P.A. calculation from arrays failing for q = u = 0"
+
+        assert np.sum(np.isclose(dpa, np.array([90,
+                                                1.43239449,
+                                                90,
+                                                8.59436693]))) == 4, \
+        "P.A. error safeguards for q = u = 0 in array input failed"
+
+
